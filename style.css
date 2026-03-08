@@ -1,24 +1,50 @@
+:root {
+    --bg-color: #f0f2f5;
+    --text-color: #1c1e21;
+    --container-bg: #ffffff;
+    --input-bg: #f5f6f7;
+    --input-border: #dddfe2;
+    --input-text: #1c1e21;
+    --primary-color: #ff4500;
+    --primary-hover: #ff6347;
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #ffffff;
+    --container-bg: #2a2a2a;
+    --input-bg: #333;
+    --input-border: #444;
+    --input-text: #ffffff;
+    --shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
 body {
-    background-color: #1a1a1a;
-    color: #ffffff;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .login-container {
-    background-color: #2a2a2a;
+    background-color: var(--container-bg);
     padding: 40px;
     border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--shadow);
     text-align: center;
+    width: 100%;
+    max-width: 400px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 h1 {
-    color: #ff4500;
+    color: var(--primary-color);
     margin-bottom: 20px;
 }
 
@@ -35,25 +61,47 @@ label {
 input[type="text"],
 input[type="password"] {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #444;
-    background-color: #333;
-    color: #ffffff;
+    padding: 12px;
+    border: 1px solid var(--input-border);
+    background-color: var(--input-bg);
+    color: var(--input-text);
     border-radius: 5px;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 button {
     width: 100%;
-    padding: 10px;
-    background-color: #ff4500;
+    padding: 12px;
+    background-color: var(--primary-color);
     color: #ffffff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    font-weight: bold;
     transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #ff6347;
+    background-color: var(--primary-hover);
+}
+
+.theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    width: auto;
+}
+
+.theme-toggle:hover {
+    background-color: var(--primary-color);
+    color: #ffffff;
 }
