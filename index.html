@@ -55,9 +55,35 @@
           <button class="submit-button" type="submit">Send Inquiry</button>
         </form>
       </section>
+
+      <section class="comments-section" aria-labelledby="comments-title">
+        <div class="contact-header">
+          <p class="eyebrow">Community</p>
+          <h2 id="comments-title">Comments</h2>
+          <p class="contact-copy">Leave feedback, ideas, or questions below.</p>
+        </div>
+        <div class="comments-shell">
+          <div id="disqus_thread"></div>
+        </div>
+      </section>
     </section>
   </main>
 
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://samsick512.github.io/test/";
+      this.page.identifier = "lotto-home";
+    };
+
+    (function () {
+      var d = document;
+      var s = d.createElement("script");
+      s.src = "https://kimminseok.disqus.com/embed.js";
+      s.setAttribute("data-timestamp", +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
   <script src="script.js"></script>
 </body>
 </html>
