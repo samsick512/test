@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>로또 자동 추첨기</title>
+  <title>로또 번호 생성기</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="app">
     <section class="card">
       <p class="eyebrow">Lucky Pick</p>
-      <h1>로또 자동 추첨기</h1>
+      <h1>로또 번호 생성기</h1>
       <p class="description">1부터 45까지 중복 없이 6개를 뽑고, 보너스 번호까지 함께 추첨합니다.</p>
 
       <div class="numbers" id="numbers" aria-live="polite"></div>
@@ -22,6 +22,39 @@
 
       <button class="draw-button" id="drawButton" type="button">번호 추첨하기</button>
       <p class="guide">버튼을 누를 때마다 새로운 번호 조합이 생성됩니다.</p>
+
+      <section class="contact-section" aria-labelledby="contact-title">
+        <div class="contact-header">
+          <p class="eyebrow">Partnership</p>
+          <h2 id="contact-title">제휴 문의</h2>
+          <p class="contact-copy">협업이나 광고 제안을 남겨주시면 확인 후 답변드리겠습니다.</p>
+        </div>
+
+        <form class="contact-form" action="https://formspree.io/f/mqegagkw" method="POST">
+          <label class="field">
+            <span>이름</span>
+            <input type="text" name="name" placeholder="홍길동" required>
+          </label>
+
+          <label class="field">
+            <span>이메일</span>
+            <input type="email" name="email" placeholder="name@example.com" required>
+          </label>
+
+          <label class="field">
+            <span>회사명</span>
+            <input type="text" name="company" placeholder="회사 또는 브랜드명">
+          </label>
+
+          <label class="field">
+            <span>문의 내용</span>
+            <textarea name="message" rows="5" placeholder="제휴 제안 내용을 적어주세요." required></textarea>
+          </label>
+
+          <input type="hidden" name="_subject" value="새 제휴 문의가 도착했습니다">
+          <button class="submit-button" type="submit">문의 보내기</button>
+        </form>
+      </section>
     </section>
   </main>
 
