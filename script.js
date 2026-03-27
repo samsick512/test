@@ -1,61 +1,126 @@
-const numbersContainer = document.getElementById("numbers");
-const bonusContainer = document.getElementById("bonus");
-const drawButton = document.getElementById("drawButton");
+const MODEL_URL = "./my_model/";
 
-function pickUniqueNumbers(count, max) {
-  const pool = Array.from({ length: max }, (_, index) => index + 1);
+const imageUpload = document.getElementById("imageUpload");
+const labelContainer = document.getElementById("label-container");
+const statusMessage = document.getElementById("statusMessage");
+const previewImage = document.getElementById("previewImage");
+const previewPlaceholder = document.getElementById("previewPlaceholder");
+const resultSummary = document.getElementById("resultSummary");
 
-  for (let index = pool.length - 1; index > 0; index -= 1) {
-    const randomIndex = Math.floor(Math.random() * (index + 1));
-    [pool[index], pool[randomIndex]] = [pool[randomIndex], pool[index]];
-  }
+let model;
+let maxPredictions = 0;
 
-  return pool.slice(0, count);
+function setStatus(message) {
+  statusMessage.textContent = message;
 }
 
-function getBallClass(number) {
-  if (number <= 10) {
-    return "ball-yellow";
-  }
-  if (number <= 20) {
-    return "ball-blue";
-  }
-  if (number <= 30) {
-    return "ball-red";
-  }
-  if (number <= 40) {
-    return "ball-gray";
-  }
-  return "ball-green";
+function createLabelRow() {
+  const item = document.createElement("div");
+  item.className = "label-item";
+
+  const row = document.createElement("div");
+  row.className = "label-row";
+
+  const name = document.createElement("span");
+  const score = document.createElement("span");
+  row.append(name, score);
+
+  const track = document.createElement("div");
+  track.className = "label-track";
+
+  const bar = document.createElement("div");
+  bar.className = "label-bar";
+  track.appendChild(bar);
+
+  item.append(row, track);
+
+  return { item, name, score, bar };
 }
 
-function createBall(number, delay) {
-  const ball = document.createElement("div");
-  ball.className = `ball ${getBallClass(number)}`;
-  ball.textContent = number;
-  ball.style.animationDelay = `${delay}s`;
-  return ball;
+function buildSummary(topPrediction) {
+  const percentage = (topPrediction.probability * 100).toFixed(1);
+  return `${topPrediction.className} ${percentage}%`;
 }
 
-function drawLottoNumbers() {
-  const picks = pickUniqueNumbers(7, 45);
-  const mainNumbers = picks.slice(0, 6).sort((a, b) => a - b);
-  const bonusNumber = picks[6];
+async function loadModel() {
+  if (model) {
+    return model;
+  }
 
-  numbersContainer.innerHTML = "";
-  bonusContainer.textContent = "?";
+  setStatus("모델을 불러오는 중입니다.");
 
-  mainNumbers.forEach((number, index) => {
-    numbersContainer.appendChild(createBall(number, index * 0.08));
+  const modelURL = MODEL_URL + "model.json";
+  const metadataURL = MODEL_URL + "metadata.json";
+
+  model = await tmImage.load(modelURL, metadataURL);
+  maxPredictions = model.getTotalClasses();
+
+  labelContainer.innerHTML = "";
+  for (let index = 0; index < maxPredictions; index += 1) {
+    const row = createLabelRow();
+    labelContainer.appendChild(row.item);
+  }
+
+  setStatus("모델 준비가 완료되었습니다.");
+  return model;
+}
+
+function renderPredictions(predictions) {
+  const sortedPredictions = [...predictions].sort((left, right) => right.probability - left.probability);
+  const topPrediction = sortedPredictions[0];
+
+  resultSummary.textContent = buildSummary(topPrediction);
+
+  predictions.forEach((prediction, index) => {
+    const row = labelContainer.children[index];
+    const percentage = (prediction.probability * 100).toFixed(1);
+    const [nameNode, scoreNode] = row.querySelector(".label-row").children;
+
+    nameNode.textContent = prediction.className;
+    scoreNode.textContent = `${percentage}%`;
+    row.querySelector(".label-bar").style.width = `${percentage}%`;
   });
-
-  bonusContainer.className = `bonus-number ${getBallClass(bonusNumber)}`;
-  bonusContainer.textContent = bonusNumber;
-  bonusContainer.style.animation = "none";
-  void bonusContainer.offsetWidth;
-  bonusContainer.style.animation = "rise-in 0.45s ease forwards";
-  bonusContainer.style.animationDelay = "0.5s";
 }
 
-drawButton.addEventListener("click", drawLottoNumbers);
-drawLottoNumbers();
+async function predictFromSource(sourceElement) {
+  if (!model) {
+    await loadModel();
+  }
+
+  const predictions = await model.predict(sourceElement);
+  renderPredictions(predictions);
+}
+
+async function handleImageUpload(event) {
+  const [file] = event.target.files;
+  if (!file) {
+    return;
+  }
+
+  try {
+    await loadModel();
+
+    const imageUrl = URL.createObjectURL(file);
+    previewImage.src = imageUrl;
+    previewImage.hidden = false;
+    previewPlaceholder.hidden = true;
+
+    await new Promise((resolve, reject) => {
+      previewImage.onload = resolve;
+      previewImage.onerror = reject;
+    });
+
+    await predictFromSource(previewImage);
+    setStatus("업로드한 사진 분석이 완료되었습니다.");
+  } catch (error) {
+    console.error(error);
+    setStatus("사진 분석에 실패했습니다. 모델 파일과 이미지 형식을 확인하세요.");
+  }
+}
+
+imageUpload.addEventListener("change", handleImageUpload);
+
+loadModel().catch((error) => {
+  console.error(error);
+  setStatus("모델을 자동으로 불러오지 못했습니다. my_model/model.json 과 metadata.json 파일이 있는지 확인하세요.");
+});

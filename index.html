@@ -3,76 +3,89 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lotto Number Generator</title>
+  <title>동물상 테스트</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="app">
-    <section class="card">
-      <p class="eyebrow">Lucky Pick</p>
-      <h1>Lotto Number Generator</h1>
-      <p class="description">Draw six unique numbers from 1 to 45, plus one bonus number.</p>
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">Teachable Machine</p>
+      <h1>강아지상 vs 고양이상 테스트</h1>
+      <p class="lead">카메라를 켜거나 사진을 올리면 AI 모델이 얼굴 인상을 보고 강아지상과 고양이상 중 어디에 가까운지 보여줍니다.</p>
+    </section>
 
-      <div class="numbers" id="numbers" aria-live="polite"></div>
-
-      <div class="bonus-wrap">
-        <span class="bonus-label">Bonus</span>
-        <div class="bonus-number" id="bonus" aria-live="polite">?</div>
+    <section class="panel">
+      <div class="controls">
+        <label class="upload-button" for="imageUpload">사진 업로드</label>
+        <input id="imageUpload" type="file" accept="image/*">
       </div>
 
-      <button class="draw-button" id="drawButton" type="button">Draw Numbers</button>
-      <p class="guide">Press the button to generate a new combination instantly.</p>
+      <p class="status" id="statusMessage" aria-live="polite">사진을 올리면 모델이 강아지상과 고양이상 확률을 분석합니다.</p>
 
-      <section class="contact-section" aria-labelledby="contact-title">
-        <div class="contact-header">
-          <p class="eyebrow">Partnership</p>
-          <h2 id="contact-title">Partnership Inquiry</h2>
-          <p class="contact-copy">Send your collaboration or advertising proposal and we will review it.</p>
+      <div class="viewer-grid">
+        <section class="viewer-card viewer-card-wide">
+          <h2>업로드한 사진 분석</h2>
+          <div class="viewer-frame preview-frame">
+            <img id="previewImage" alt="업로드한 사진 미리보기" hidden>
+            <p class="viewer-placeholder" id="previewPlaceholder">정면 얼굴 사진을 올리면 여기에 표시됩니다.</p>
+          </div>
+        </section>
+      </div>
+
+      <section class="result-card" aria-labelledby="result-title">
+        <div class="result-head">
+          <p class="eyebrow">Result</p>
+          <h2 id="result-title">분석 결과</h2>
         </div>
-
-        <form class="contact-form" action="https://formspree.io/f/mqegagkw" method="POST">
-          <label class="field">
-            <span>Name</span>
-            <input type="text" name="name" placeholder="Your name" required>
-          </label>
-
-          <label class="field">
-            <span>Email</span>
-            <input type="email" name="email" placeholder="name@example.com" required>
-          </label>
-
-          <label class="field">
-            <span>Company</span>
-            <input type="text" name="company" placeholder="Company or brand">
-          </label>
-
-          <label class="field">
-            <span>Message</span>
-            <textarea name="message" rows="5" placeholder="Tell us about your proposal." required></textarea>
-          </label>
-
-          <input type="hidden" name="_subject" value="New partnership inquiry">
-          <button class="submit-button" type="submit">Send Inquiry</button>
-        </form>
+        <div class="result-summary" id="resultSummary">아직 분석 결과가 없습니다.</div>
+        <div class="label-list" id="label-container"></div>
       </section>
+    </section>
 
-      <section class="comments-section" aria-labelledby="comments-title">
-        <div class="contact-header">
-          <p class="eyebrow">Community</p>
-          <h2 id="comments-title">Comments</h2>
-          <p class="contact-copy">Leave feedback, ideas, or questions below.</p>
-        </div>
-        <div class="comments-shell">
-          <div id="disqus_thread"></div>
-        </div>
-      </section>
+    <section class="panel" aria-labelledby="contact-title">
+      <div class="result-head">
+        <p class="eyebrow">Partnership</p>
+        <h2 id="contact-title">제휴 문의</h2>
+      </div>
+      <form class="contact-form" action="https://formspree.io/f/mqegagkw" method="POST">
+        <label class="field">
+          <span>이름</span>
+          <input type="text" name="name" placeholder="홍길동" required>
+        </label>
+        <label class="field">
+          <span>이메일</span>
+          <input type="email" name="email" placeholder="name@example.com" required>
+        </label>
+        <label class="field">
+          <span>회사명</span>
+          <input type="text" name="company" placeholder="회사 또는 브랜드명">
+        </label>
+        <label class="field">
+          <span>문의 내용</span>
+          <textarea name="message" rows="5" placeholder="제휴 제안 내용을 적어주세요." required></textarea>
+        </label>
+        <input type="hidden" name="_subject" value="새 제휴 문의가 도착했습니다">
+        <button class="primary-button" type="submit">문의 보내기</button>
+      </form>
+    </section>
+
+    <section class="panel comments-panel" aria-labelledby="comments-title">
+      <div class="result-head">
+        <p class="eyebrow">Community</p>
+        <h2 id="comments-title">댓글</h2>
+      </div>
+      <div class="comments-shell">
+        <div id="disqus_thread"></div>
+      </div>
     </section>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
   <script>
     var disqus_config = function () {
       this.page.url = "https://samsick512.github.io/test/";
-      this.page.identifier = "lotto-home";
+      this.page.identifier = "animal-face-test";
     };
 
     (function () {
